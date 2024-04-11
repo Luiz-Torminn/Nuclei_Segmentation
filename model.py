@@ -14,11 +14,20 @@ class Conv2D(nn.Module):
             nn.BatchNorm2d(out_channels),
             nn.ReLU(True)  
         )
-        
-class Unet(nn.Module):
-    def __init__(self, *args, **kwargs) -> None:
-        super().__init__(*args, **kwargs)
     
+    def forward(self, x):
+        return self.conv(x)
+    
+# %%       
+class Unet(nn.Module):
+    def __init__(self, in_channels = 1, out_channels = 1, features = [64,128,256,512]) -> None:
+        super(self, Unet).__init__()
+        
+        self.down = nn.ModuleList()
+        self.upward = nn.ModuleList()
+        self.pool = nn.MaxPool2d(2,2)
+        
+    # Down part of U-Net
         
         
         
