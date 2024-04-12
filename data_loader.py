@@ -11,7 +11,7 @@ from pathlib import Path
 class Nuclei_Loader(Dataset):
     def __init__(self, dir_path):
         super().__init__()
-        self.image_files = [f'{dir_path}/images/{i}' for i in os.listdir(f'{dir_path}/image')]
+        self.image_files = [f'{dir_path}/images/{i}' for i in os.listdir(f'{dir_path}/images')]
         self.mask_files = [f'{dir_path}/masks/{i}' for i in os.listdir(f'{dir_path}/masks')]
         
         # Check if images have their corresponding masks
