@@ -6,6 +6,7 @@ from torch.utils.data import DataLoader
 from train import * 
 from utils import *
 from data_loader import *
+from model import Unet
 
 #%%
 # HYPERPARAMETERS
@@ -24,7 +25,7 @@ val_data = Nuclei_Loader('data/dataset/val')
 val_loader = DataLoader(val_data, batch_size=BATCH_SIZE, shuffle=False)
 
 # %%
-model = None
+model = Unet(in_channels=3).to(DEVICE)
 loss = torch.nn.BCEWithLogitsLoss()
 optimizer = torch.optim.Adam(model.parameters(), lr = LEARNING_RATE)
 
@@ -41,8 +42,8 @@ for epoch in range(EPOCHS):
         'optimizer': optimizer.state_dict()
     }
     
-    train_loss = train_model(train_data, device = DEVICE, model = model, loss = loss, optimizer = optimizer, epochs = EPOCHS, epoch = epoch)
-    val_loss, val_accuracy = validate_model(train_data, device = DEVICE, model = model, loss = loss, optimizer = optimizer, epochs = EPOCHS, epoch = epoch)
+    train_loss = train_model(train_data, device = DEVICE, model = model, loss_function = loss, optimizer = optimizer, epochs = EPOCHS, epoch = epoch)
+    val_loss, val_accuracy = validate_model(train_data, device = DEVICE, model = model, loss_function = loss)
     
     print(f'''
           \nFor epoch [{epoch}/{EPOCHS}]

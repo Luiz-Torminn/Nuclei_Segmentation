@@ -71,3 +71,5 @@ def divide_data(image_path, masks_path, image_dest, mask_dest):
  # %%   
 divide_data('data/raw_data/images', 'data/raw_data/masks', 'data/dataset', 'data/dataset')
 
+
+# %%

@@ -38,10 +38,12 @@ class Nuclei_Loader(Dataset):
         
         # Tranform images
         image = self.transformation(image)
+        image = image.unsqueeze(0) #<-- (B, C, H, W)
         
         # Open and stablish classifiction for
         mask = cv2.imread(self.mask_files[index], 0)
         mask = self.transformation(mask)
+        mask = mask.unsqueeze(0)
         
         return (image, mask)
 
@@ -50,10 +52,6 @@ class Nuclei_Loader(Dataset):
 
 # image_files = [f'{dir_path}/images/{i}' for i in os.listdir(f'{dir_path}/images')]
 # mask_files = [f'{dir_path}/masks/{i}' for i in os.listdir(f'{dir_path}/masks')]
-
-
-
-
 
 # # Check if images have their corresponding masks
 # img_stems = [re.findall(r'[^\simages_|masks_]\w*[^.jpg\s]', Path(image_files[i]).stem)[0] for i in range(len(image_files)) if i != '.DS_Store']

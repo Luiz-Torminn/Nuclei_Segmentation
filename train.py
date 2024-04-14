@@ -1,14 +1,14 @@
 import torch
 
-def train_model(dataloader, device:str, model, loss, optimizer, epochs:int, epoch:int) -> float:
+def train_model(dataloader, device:str, model, loss_function, optimizer, epochs:int, epoch:int) -> float:
     model.train()
     cumulative_loss = 0.0
     
     for i,(img, mask) in enumerate(dataloader):
         img, mask = img.to(device), mask.to(device)
-        output = model(img.float)
+        output = model(img.float())
         
-        loss = loss(output, mask.long())
+        loss = loss_function(output, mask)
         loss.backward()
         
         optimizer.step()
@@ -23,7 +23,7 @@ def train_model(dataloader, device:str, model, loss, optimizer, epochs:int, epoc
     
     return avg_loss
 
-def validate_model(dataloader, device:str, model, loss, optimizer, epochs:int, epoch:int) -> tuple[float]:
+def validate_model(dataloader, device:str, model, loss_function) -> tuple[float]:
     model.eval()
     cumulative_loss = 0.0
     total_pxl = 0
@@ -35,12 +35,12 @@ def validate_model(dataloader, device:str, model, loss, optimizer, epochs:int, e
         output = model(image.float())
         
         # Loss
-        loss = loss(output, mask.long())
+        loss = loss_function(output, mask)
         cumulative_loss += loss.item()
         
         # Accuracy
         _, prediction = torch.max(output, 1)
-        total_pxl = mask.shape()[0] * mask.shape()[1]
+        total_pxl = mask.shape[0] * mask.shape[1]
         correct_pxl += [mask == prediction].sum()
         
     avg_loss = cumulative_loss/len(dataloader)
