@@ -41,7 +41,7 @@ def validate_model(dataloader, device:str, model, loss_function) -> tuple[float]
         # Accuracy
         _, prediction = torch.max(output, 1)
         total_pxl = mask.shape[0] * mask.shape[1]
-        correct_pxl += [mask == prediction].sum()
+        correct_pxl += (mask == prediction).sum()
         
     avg_loss = cumulative_loss/len(dataloader)
     avg_accuracy = correct_pxl/total_pxl

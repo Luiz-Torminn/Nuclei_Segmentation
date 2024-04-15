@@ -7,6 +7,7 @@ from train import *
 from utils import *
 from data_loader import *
 from model import Unet
+from graphs import plot_loss
 
 #%%
 # HYPERPARAMETERS
@@ -16,6 +17,10 @@ BATCH_SIZE = 3
 EPOCHS = 50
 LEARNING_RATE = 0.001
 MODEL_LOAD = True
+LOSS_VALUES = {
+    'Train Loss':[],
+    'Validation Loss':[]
+}
 
 # %%
 train_data = Nuclei_Loader('data/dataset/train')
@@ -35,6 +40,7 @@ if MODEL_LOAD:
         load_model(model=model, save_path=f'data/saves/model/BCE_Loss_50_epochs.pth.tar')
     except FileNotFoundError:
         print('No save file was found...')
+        
 # %%
 for epoch in range(EPOCHS):
     checkpoint = {
@@ -45,14 +51,20 @@ for epoch in range(EPOCHS):
     train_loss = train_model(train_data, device = DEVICE, model = model, loss_function = loss, optimizer = optimizer, epochs = EPOCHS, epoch = epoch)
     val_loss, val_accuracy = validate_model(train_data, device = DEVICE, model = model, loss_function = loss)
     
+    LOSS_VALUES['Train Loss'].append(train_loss)
+    LOSS_VALUES['Validation Loss'].append(val_loss)
+    
     print(f'''
           \nFor epoch [{epoch}/{EPOCHS}]
-            Train Loss: {train_loss}
-            Validation Loss: {val_loss}
+            Train Loss: {train_loss:.4f}
+            Validation Loss: {val_loss:.4f}
             Validation Accuracy: {val_accuracy}%
             \n
           ''')
     
-    save_model(checkpoint=checkpoint, save_path=f'data/saves/model/BCE_Loss_{epoch}_epochs.pth.tar')
+    save_model(checkpoint=checkpoint, save_path=f'data/saves/model/BCE_Loss_{EPOCHS}_epochs.pth.tar')
     
+# %%
+plot_loss(LOSS_VALUES, f'data/saves/loss_graphs', EPOCHS)
+
 # %%
