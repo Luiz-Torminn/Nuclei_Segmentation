@@ -37,8 +37,7 @@ class Nuclei_Loader(Dataset):
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         
         # Tranform images
-        image = self.transformation(image)
-        image = image.unsqueeze(0) #<-- (B, C, H, W)
+        image = self.transformation(image) 
         
         # Open and stablish classifiction for
         mask = cv2.imread(self.mask_files[index], 0)

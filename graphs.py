@@ -17,17 +17,26 @@ def plot_loss(loss_values:dict, save_path:str, epochs:int, multi_graph:bool = Fa
     fig.savefig(f'{save_path}/loss_graph_{epochs}_epochs.png')
         
 # %%
-def plot_image_mask(image, mask, pred):
-    fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize = (8,8))
+def plot_image_mask(image, mask, pred, save_path:str = None, show:bool = False):
+    fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize = (10,5))
+    fig.tight_layout(pad=1)
     
-    ax1.plot(image)
+    ax1.imshow(image)
     ax1.set_title('Original Image')
     
-    ax2.plot(mask)
+    ax2.imshow(mask)
     ax2.set_title('Mask')
     
-    ax3.plot(pred)
+    ax3.imshow(pred)
     ax3.set_title('Prediction')
+    
+    if save_path:
+        plt.savefig(save_path)
+    
+    if show:
+        plt.show()
+    
+    
     
 # %%
 # VALUES = {

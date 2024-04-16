@@ -39,7 +39,7 @@ if MODEL_LOAD:
     try:
         load_model(model=model, save_path=f'data/saves/model/BCE_Loss_50_epochs.pth.tar')
     except FileNotFoundError:
-        print('No save file was found...')
+        print('\nNo save file was found...\n')
         
 # %%
 for epoch in range(EPOCHS):
