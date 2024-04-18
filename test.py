@@ -5,9 +5,9 @@ from torch.utils.data import DataLoader
 
 from train import * 
 from utils import *
+from graphs import *
 from data_loader import *
 from model import Unet
-from graphs import *
 
 # %%
 DEVICE = 'mps' if torch.backends.mps.is_available() else 'cpu'
