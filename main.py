@@ -60,9 +60,9 @@ def main() -> None:
 
             print(f'''
                   \nFor epoch [{epoch + 1}/{EPOCHS}]:
-                    Train Loss: {train_loss:.4f}
-                    Validation Loss: {val_loss:.4f}
-                    Validation Accuracy: {val_accuracy:.4f}%
+                    Train Loss: {train_loss:.5f}
+                    Validation Loss: {val_loss:.5f}
+                    Validation Accuracy: {val_accuracy:.3f}%
                     \n
                   ''')
             
