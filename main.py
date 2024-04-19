@@ -8,6 +8,7 @@ from utils import *
 from data_loader import *
 from model import Unet
 from graphs import plot_loss
+from earlystopping import EarlyStopping
 
 #%%
 # HYPERPARAMETERS
@@ -40,30 +41,42 @@ if MODEL_LOAD:
         load_model(model=model, save_path=f'data/saves/model/BCE_Loss_50_epochs.pth.tar')
     except FileNotFoundError:
         print('\nNo save file was found...\n')
-        
+       
+# %%
+es = EarlyStopping(patience=5, min_loss=0.001, verbose=True)
+train_process = True
+ 
 # %%
 def main() -> None:
-    for epoch in range(EPOCHS):
-        checkpoint = {
-            'state_dict': model.state_dict(),
-            'optimizer': optimizer.state_dict()
-        }
-        
-        train_loss = train_model(train_loader, device = DEVICE, model = model, loss_function = loss, optimizer = optimizer, epochs = EPOCHS, epoch = epoch)
-        val_loss, val_accuracy = validate_model(val_loader, device = DEVICE, model = model, loss_function = loss)
-        
-        LOSS_VALUES['Train Loss'].append(train_loss)
-        LOSS_VALUES['Validation Loss'].append(val_loss)
-        
-        print(f'''
-              \nFor epoch [{epoch}/{EPOCHS}]
-                Train Loss: {train_loss:.4f}
-                Validation Loss: {val_loss:.4f}
-                Validation Accuracy: {val_accuracy}%
-                \n
-              ''')
-        
-        save_model(checkpoint=checkpoint, save_path=f'data/saves/model/BCE_Loss_{EPOCHS}_epochs.pth.tar')
+    while train_process:
+        for epoch in range(EPOCHS):
+            train_loss = train_model(train_loader, device = DEVICE, model = model, loss_function = loss, optimizer = optimizer, epochs = EPOCHS, epoch = epoch)
+            val_loss, val_accuracy = validate_model(val_loader, device = DEVICE, model = model, loss_function = loss)
+
+            LOSS_VALUES['Train Loss'].append(train_loss)
+            LOSS_VALUES['Validation Loss'].append(val_loss)
+            
+            train_process = es(model=model, current_loss=val_loss)
+
+            print(f'''
+                  \nFor epoch [{epoch + 1}/{EPOCHS}]:
+                    Train Loss: {train_loss:.4f}
+                    Validation Loss: {val_loss:.4f}
+                    Validation Accuracy: {val_accuracy:.4f}%
+                    \n
+                  ''')
+            
+            if not train_process:
+                checkpoint = {
+                    'state_dict': model.state_dict(),
+                    'optimizer': optimizer.state_dict()
+                }
+
+                save_model(checkpoint=checkpoint, save_path=f'data/saves/model/BCE_Loss_{EPOCHS}_epochs.pth.tar')
+                
+                train_process = es
+                
+                break
         
     # %%
     plot_loss(LOSS_VALUES, f'data/saves/loss_graphs', EPOCHS)

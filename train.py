@@ -6,6 +6,7 @@ def train_model(dataloader, device:str, model, loss_function, optimizer, epochs:
     
     for i,(img, mask) in enumerate(dataloader):
         img, mask = img.to(device), mask.to(device)
+        t = mask.shape
         output = model(img.float())
         
         loss = loss_function(output, mask)
@@ -40,14 +41,10 @@ def validate_model(dataloader, device:str, model, loss_function) -> tuple[float]
         
         # Accuracy
         _, prediction = torch.max(output, 1)
-        love = mask.shape
-        total_pxl = mask.shape[0] * mask.shape[1] #<-- CHECK ACCURACY OUTPUT
-        correct_pxl += (mask == prediction).sum()
+        total_pxl += mask.shape[0] * mask.shape[2] * mask.shape[3] #<-- CHECK ACCURACY OUTPUT
+        correct_pxl += (prediction == mask).sum()
         
     avg_loss = cumulative_loss/len(dataloader)
     avg_accuracy = correct_pxl/total_pxl
         
     return  (avg_loss, avg_accuracy)
-        
-        
-        
