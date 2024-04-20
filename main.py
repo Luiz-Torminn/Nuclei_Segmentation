@@ -3,12 +3,12 @@ import torch
 import torch.utils
 from torch.utils.data import DataLoader
 
-from train import * 
-from utils import *
-from data_loader import *
 from model import Unet
-from graphs import plot_loss
-from earlystopping import EarlyStopping
+from utils.train import * 
+from utils.utils import *
+from data_loader import *
+from utils.graphs import plot_loss
+from utils.earlystopping import EarlyStopping
 
 #%%
 # HYPERPARAMETERS
