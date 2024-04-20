@@ -44,10 +44,11 @@ if MODEL_LOAD:
        
 # %%
 es = EarlyStopping(patience=5, min_loss=0.001, verbose=True)
-train_process = True
  
 # %%
 def main() -> None:
+    train_process = True
+    
     while train_process:
         for epoch in range(EPOCHS):
             train_loss = train_model(train_loader, device = DEVICE, model = model, loss_function = loss, optimizer = optimizer, epochs = EPOCHS, epoch = epoch)
@@ -73,9 +74,6 @@ def main() -> None:
                 }
 
                 save_model(checkpoint=checkpoint, save_path=f'data/saves/model/BCE_Loss_{EPOCHS}_epochs.pth.tar')
-                
-                train_process = es
-                
                 break
         
     # %%

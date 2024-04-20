@@ -26,7 +26,7 @@ class EarlyStopping():
             self.counter += 1
             
             if self.counter >= self.patience:
-                print(f'Model stopped at counter = {self.counter}')
+                print(f'\nModel stopped at counter = {self.counter}')
                 
                 if self.load_best_model:
                     model.load_state_dict(self.best_model.state_dict())
@@ -34,7 +34,7 @@ class EarlyStopping():
                 return False
             
         if self.verbose:
-            print(f'Early stopping status --> [{self.counter}/{self.patience}]')
+            print(f'\nEarly stopping status --> [{self.counter}/{self.patience}]')
             
         return True
             

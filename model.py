@@ -50,7 +50,6 @@ class Unet(nn.Module):
         
     def forward(self, x):
         skip_connections = []
-        t_skip = reversed(skip_connections)
         
         for down in self.downs:
             x = down(x)
