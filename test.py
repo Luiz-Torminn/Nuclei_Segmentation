@@ -11,11 +11,11 @@ from utils.graphs import *
 
 # %%
 DEVICE = 'mps' if torch.backends.mps.is_available() else 'cpu'
-# MODEL_DICT_PATH = 'data/saves/model'
+MODEL_DICT_PATH = 'data/saves/model/BCE_Loss_50_epochs.pth.tar'
 
 # %%
 model = Unet(in_channels=3).to(DEVICE)
-# load_model(model, MODEL_DICT_PATH)
+load_model(model, MODEL_DICT_PATH)
 
 test_data = Nuclei_Loader('data/dataset/test')
 test_loader = DataLoader(test_data, batch_size=1, shuffle=True)

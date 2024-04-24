@@ -8,7 +8,6 @@ def train_model(dataloader, device:str, model, loss_function, optimizer, epochs:
     
     for i,(img, mask) in enumerate(dataloader):
         img, mask = img.to(device), mask.to(device)
-        t = mask.shape
         output = model(img.float())
         
         loss = loss_function(output, mask)
@@ -32,12 +31,13 @@ def validate_model(dataloader, device:str, model, loss_function) -> tuple[float]
     cumulative_loss = 0.0
     total_pxl = 0
     correct_pxl = 0   
+    dice_score = 0.0
     
     with torch.no_grad():
         for image, mask in dataloader:
             image, mask = image.to(device), mask.to(device)
 
-            output = model(image)   
+            output = model(image.float())   
 
             # Loss
             loss = loss_function(output, mask)
@@ -48,28 +48,32 @@ def validate_model(dataloader, device:str, model, loss_function) -> tuple[float]
             prediction = prediction.unsqueeze(1)
             total_pxl += mask.shape[0] * mask.shape[2] * mask.shape[3] 
             correct_pxl += (prediction == mask).sum()
+            
+            # Dice Score
+            dice_score += (2 * (prediction * mask).sum()) / (total_pxl * 2)
         
     avg_loss = cumulative_loss/len(dataloader)
     avg_accuracy = (correct_pxl/total_pxl)*100
+    dice = dice_score/len(dataloader)
         
-    return  (avg_loss, avg_accuracy)
+    return  (avg_loss, avg_accuracy, dice)
 
 #%%
-# from model import Unet
-# import torch
-# from torch.utils.data import DataLoader
-# from data_loader import Nuclei_Loader
+from model import Unet
+import torch
+from torch.utils.data import DataLoader
+from data_loader import Nuclei_Loader
 
 
-# DEVICE = 'mps' if torch.backends.mps.is_available() else 'cpu'
-# model = Unet(3).to(DEVICE)
-# loss = torch.nn.BCELoss()
+DEVICE = 'mps' if torch.backends.mps.is_available() else 'cpu'
+model = Unet(3).to(DEVICE)
+loss = torch.nn.BCELoss()
 
-# data = Nuclei_Loader('data/dataset/val')
-# val_data = DataLoader(data, batch_size=3, shuffle=True)
+data = Nuclei_Loader('data/dataset/val')
+val_data = DataLoader(data, batch_size=3, shuffle=True)
 
 
-# val_loss, val_acc = validate_model(val_data, DEVICE, model, loss)
-# print(val_acc)
+val_loss, val_acc, dice = validate_model(val_data, DEVICE, model, loss)
+print(val_acc)
 
 # %%

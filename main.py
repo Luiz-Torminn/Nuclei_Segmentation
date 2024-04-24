@@ -52,7 +52,7 @@ def main() -> None:
     while train_process:
         for epoch in range(EPOCHS):
             train_loss = train_model(train_loader, device = DEVICE, model = model, loss_function = loss, optimizer = optimizer, epochs = EPOCHS, epoch = epoch)
-            val_loss, val_accuracy = validate_model(val_loader, device = DEVICE, model = model, loss_function = loss)
+            val_loss, val_accuracy, dice = validate_model(val_loader, device = DEVICE, model = model, loss_function = loss)
 
             LOSS_VALUES['Train Loss'].append(train_loss)
             LOSS_VALUES['Validation Loss'].append(val_loss)
@@ -63,7 +63,8 @@ def main() -> None:
                   \nFor epoch [{epoch + 1}/{EPOCHS}]:
                     Train Loss: {train_loss:.5f}
                     Validation Loss: {val_loss:.5f}
-                    Validation Accuracy: {val_accuracy:.3f}%
+                    Validation Accuracy: {val_accuracy:.2f}%
+                    Dice Score: {dice:.2f}
                     \n
                   ''')
             
