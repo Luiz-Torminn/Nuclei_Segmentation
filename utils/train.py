@@ -49,7 +49,7 @@ def validate_model(dataloader, device:str, model, loss_function) -> tuple[float]
             correct_pxl += (prediction == mask).sum()
             
             # Dice Score
-            dice_score += (2 * (prediction * mask).sum()) / (total_pxl * 2)
+            dice_score += 2 * ((prediction * mask).sum()) / (prediction + mask).sum()
         
     avg_loss = cumulative_loss/len(dataloader)
     avg_accuracy = (correct_pxl/total_pxl)*100
@@ -58,9 +58,9 @@ def validate_model(dataloader, device:str, model, loss_function) -> tuple[float]
     return  (avg_loss, avg_accuracy, dice)
 
 #%%
-# from model import Unet
 # import torch
 # from torch.utils.data import DataLoader
+# from utils import load_model 
 # from data_loader import Nuclei_Loader
 
 
@@ -68,10 +68,12 @@ def validate_model(dataloader, device:str, model, loss_function) -> tuple[float]
 # model = Unet(3).to(DEVICE)
 # loss = torch.nn.BCELoss()
 
+# # load_model(model, 'data/saves/model/BCE_Loss_10_epochs.pth.tar')
+
 # data = Nuclei_Loader('data/dataset/val')
 # val_data = DataLoader(data, batch_size=3, shuffle=True)
 
 # val_loss, val_acc, dice = validate_model(val_data, DEVICE, model, loss)
-# print(val_acc)
+# print(dice)
 
 # %%
